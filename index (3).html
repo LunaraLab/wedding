@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Aditi &amp; Rajveer — We're Getting Married</title>
+<meta name="description" content="Join Aditi & Rajveer as they begin their forever — wedding dates, itinerary, our story, and RSVP." />
+
+<!-- Fonts: Cinzel (display) + Inter (body). Two families, clearly distinct. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ivory: '#FBF6EC',
+          'ivory-deep': '#F2E8D3',
+          burgundy: '#5C0E2A',
+          'burgundy-deep': '#3A0818',
+          emerald: '#0F3D2E',
+          'emerald-deep': '#092A20',
+          gold: '#C9A24B',
+          'gold-soft': '#E7D3A1',
+          'gold-bright': '#E4BE6D',
+          ink: '#2B2118',
+        },
+        fontFamily: {
+          display: ['"Cinzel"', 'serif'],
+          body: ['"Inter"', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  html { scroll-snap-type: y proximity; }
+  section[data-snap] { scroll-snap-align: start; }
+  ::selection { background: #C9A24B; color: #3A0818; }
+
+  body { -webkit-tap-highlight-color: transparent; }
+
+  /* Reveal-on-scroll */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .9s cubic-bezier(.22,.61,.36,1), transform .9s cubic-bezier(.22,.61,.36,1); }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1.in-view { transition-delay: .12s; }
+  .reveal-delay-2.in-view { transition-delay: .24s; }
+  .reveal-delay-3.in-view { transition-delay: .36s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .reveal-delay-1, .reveal-delay-2, .reveal-delay-3 { transition: none !important; opacity: 1 !important; transform: none !important; }
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+  }
+
+  /* Warm sepia treatment for placeholder photography, ties disparate stock images into one palette */
+  .photo-tone {
+    filter: sepia(28%) saturate(130%) hue-rotate(-8deg) brightness(0.94) contrast(1.03);
+  }
+
+  /* Gold hairline divider with center diamond */
+  .gold-divider { position: relative; height: 1px; background: linear-gradient(90deg, transparent, #C9A24B 20%, #C9A24B 80%, transparent); }
+  .gold-divider::before {
+    content: ''; position: absolute; left: 50%; top: 50%; width: 8px; height: 8px;
+    background: #C9A24B; transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  .font-display { letter-spacing: 0.02em; }
+
+  /* Countdown digits */
+  .count-box { background: linear-gradient(180deg, #FBF6EC, #F2E8D3); border: 1px solid #C9A24B55; }
+
+  /* Custom scrollbar (webkit) for lightbox / wishes list, kept subtle */
+  .thin-scroll::-webkit-scrollbar { width: 6px; }
+  .thin-scroll::-webkit-scrollbar-thumb { background: #C9A24B77; border-radius: 4px; }
+
+  /* Dot navigation */
+  .dot-nav button { width: 8px; height: 8px; border-radius: 999px; background: #C9A24B66; transition: all .3s ease; }
+  .dot-nav button.active { background: #C9A24B; width: 10px; height: 22px; border-radius: 999px; }
+
+  input:focus-visible, button:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible {
+    outline: 2px solid #C9A24B; outline-offset: 3px;
+  }
+
+  .no-overflow { overflow-x: hidden; }
+</style>
+</head>
+
+<body class="no-overflow bg-ivory text-ink font-body antialiased">
+
+<!-- ============ FLOATING MUSIC TOGGLE ============ -->
+<audio id="bg-music" loop preload="none">
+  <!-- Replace with an actual instrumental track, e.g. <source src="assets/shehnai-instrumental.mp3" type="audio/mpeg"> -->
+  <source src="" type="audio/mpeg">
+</audio>
+<button id="music-toggle" aria-label="Play background music"
+  class="fixed top-4 right-4 z-50 w-11 h-11 rounded-full bg-burgundy/90 border border-gold/60 backdrop-blur flex items-center justify-center shadow-lg shadow-burgundy/30 active:scale-90 transition-transform">
+  <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 fill-gold-soft ml-0.5"><path d="M6 4.5v15l13-7.5-13-7.5z"/></svg>
+  <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 fill-gold-soft hidden"><path d="M6 4.5h4v15H6zM14 4.5h4v15h-4z"/></svg>
+</button>
+
+<!-- ============ DOT NAVIGATION ============ -->
+<nav class="dot-nav fixed right-4 top-1/2 -translate-y-1/2 z-40 flex-col gap-3 hidden sm:flex" aria-label="Section navigation">
+  <button data-target="#home" class="active" aria-label="Home"></button>
+  <button data-target="#itinerary" aria-label="Itinerary"></button>
+  <button data-target="#story" aria-label="Our story"></button>
+  <button data-target="#blessings" aria-label="Blessings"></button>
+  <button data-target="#venue" aria-label="Venue"></button>
+  <button data-target="#rsvp" aria-label="RSVP"></button>
+</nav>
+
+<!-- ============ 1. HOME / COVER ============ -->
+<section id="home" data-snap class="relative min-h-[100dvh] flex flex-col items-center justify-between overflow-hidden">
+  <!-- Placeholder couple photo background -->
+  <div class="absolute inset-0">
+    <img src="https://picsum.photos/seed/aditiraj-hero/900/1400" alt="Placeholder photo of the couple — replace with an engagement photo" class="w-full h-full object-cover photo-tone">
+    <div class="absolute inset-0 bg-gradient-to-b from-burgundy-deep/80 via-burgundy-deep/55 to-burgundy-deep/90"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(201,162,75,0.18),transparent_60%)]"></div>
+  </div>
+
+  <!-- top ornament + invocation -->
+  <div class="relative z-10 pt-10 flex flex-col items-center px-6 reveal">
+    <svg width="46" height="20" viewBox="0 0 46 20" class="mb-3 opacity-80">
+      <path d="M2 10 Q 23 -4 44 10" stroke="#C9A24B" stroke-width="1" fill="none"/>
+      <circle cx="23" cy="10" r="2.5" fill="#C9A24B"/>
+    </svg>
+    <p class="text-gold-soft/90 text-xs tracking-[0.25em] font-body">|| Shree Ganeshay Namah ||</p>
+  </div>
+
+  <!-- Center: names -->
+  <div class="relative z-10 flex-1 flex flex-col items-center justify-center px-6 text-center gap-5 -mt-6">
+    <p class="reveal text-ivory/80 text-sm sm:text-base font-body tracking-wide">We are getting married</p>
+
+    <h1 class="reveal reveal-delay-1 font-display text-ivory leading-[1.15]">
+      <span class="block text-[2.6rem] sm:text-6xl">Aditi</span>
+      <span class="block text-gold-soft text-2xl sm:text-3xl my-1 font-body italic font-light">&amp;</span>
+      <span class="block text-[2.6rem] sm:text-6xl">Rajveer</span>
+    </h1>
+
+    <div class="reveal reveal-delay-2 gold-divider w-28 my-1"></div>
+
+    <p class="reveal reveal-delay-2 max-w-xs text-ivory/85 text-sm leading-relaxed">
+      Two families, one story. We would be honoured to have you with us as we begin this new chapter — with laughter, blessings, and a little bit of chaos.
+    </p>
+
+    <p class="reveal reveal-delay-3 text-gold-soft font-display text-sm tracking-[0.2em] mt-2">12 · 12 · 2026 &nbsp;&middot;&nbsp; CHENNAI</p>
+  </div>
+
+  <!-- scroll cue -->
+  <div class="relative z-10 pb-8 flex flex-col items-center gap-1">
+    <span class="text-ivory/70 text-[11px] tracking-[0.2em] font-body">SCROLL</span>
+    <svg class="w-4 h-4 fill-none stroke-gold-soft animate-bounce" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+  </div>
+</section>
+
+<!-- ============ 2. DATE, TIME & ITINERARY ============ -->
+<section id="itinerary" data-snap class="relative min-h-[100dvh] bg-ivory px-6 py-16 flex flex-col">
+  <div class="max-w-md mx-auto w-full">
+
+    <div class="reveal text-center mb-2">
+      <h2 class="font-display text-3xl text-burgundy">The Celebrations</h2>
+      <div class="gold-divider w-16 mx-auto my-4"></div>
+      <p class="text-ink/70 text-sm">Four days of colour, music, and mandap magic.</p>
+    </div>
+
+    <!-- Countdown -->
+    <div class="reveal reveal-delay-1 mt-8 grid grid-cols-4 gap-2 sm:gap-3">
+      <div class="count-box rounded-xl py-3 text-center shadow-sm">
+        <p id="cd-days" class="font-display text-2xl sm:text-3xl text-burgundy">00</p>
+        <p class="text-[10px] tracking-widest text-ink/60 mt-1">DAYS</p>
+      </div>
+      <div class="count-box rounded-xl py-3 text-center shadow-sm">
+        <p id="cd-hours" class="font-display text-2xl sm:text-3xl text-burgundy">00</p>
+        <p class="text-[10px] tracking-widest text-ink/60 mt-1">HRS</p>
+      </div>
+      <div class="count-box rounded-xl py-3 text-center shadow-sm">
+        <p id="cd-mins" class="font-display text-2xl sm:text-3xl text-burgundy">00</p>
+        <p class="text-[10px] tracking-widest text-ink/60 mt-1">MIN</p>
+      </div>
+      <div class="count-box rounded-xl py-3 text-center shadow-sm">
+        <p id="cd-secs" class="font-display text-2xl sm:text-3xl text-burgundy">00</p>
+        <p class="text-[10px] tracking-widest text-ink/60 mt-1">SEC</p>
+      </div>
+    </div>
+    <p id="cd-message" class="reveal reveal-delay-1 text-center text-emerald font-display text-sm mt-3 hidden">The celebrations have begun! 🎉</p>
+
+    <!-- Add to calendar -->
+    <button id="add-to-calendar" class="reveal reveal-delay-2 mt-6 mx-auto flex items-center gap-2 border border-gold text-burgundy text-sm font-medium px-5 py-2.5 rounded-full hover:bg-gold/10 active:scale-95 transition">
+      <svg class="w-4 h-4 stroke-burgundy fill-none" viewBox="0 0 24 24" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke-linecap="round"/></svg>
+      Add to Google Calendar
+    </button>
+
+    <!-- Timeline -->
+    <div class="mt-12 relative pl-6">
+      <div class="absolute left-[7px] top-1 bottom-1 w-px bg-gradient-to-b from-gold via-gold/40 to-transparent"></div>
+
+      <div class="reveal relative pb-9">
+        <span class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-ivory border-2 border-gold"></span>
+        <p class="text-[11px] tracking-widest text-emerald font-medium">10 DEC 2026 · 10:00 AM</p>
+        <h3 class="font-display text-lg text-burgundy mt-0.5">Haldi &amp; Mehendi</h3>
+        <p class="text-sm text-ink/70 mt-1">Sharma Residence Garden, Adyar</p>
+        <p class="text-xs text-ink/50 mt-1">Dress code: Yellow &amp; green, comfortable traditional wear</p>
+      </div>
+
+      <div class="reveal relative pb-9">
+        <span class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-ivory border-2 border-gold"></span>
+        <p class="text-[11px] tracking-widest text-emerald font-medium">11 DEC 2026 · 7:00 PM</p>
+        <h3 class="font-display text-lg text-burgundy mt-0.5">Sangeet Night</h3>
+        <p class="text-sm text-ink/70 mt-1">Amara Grand Lawns, ECR</p>
+        <p class="text-xs text-ink/50 mt-1">Dress code: Shimmer &amp; glam, indo-western</p>
+      </div>
+
+      <div class="reveal relative pb-9">
+        <span class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-ivory border-2 border-gold"></span>
+        <p class="text-[11px] tracking-widest text-emerald font-medium">12 DEC 2026 · 10:30 AM</p>
+        <h3 class="font-display text-lg text-burgundy mt-0.5">Muhurtham &amp; Varmala</h3>
+        <p class="text-sm text-ink/70 mt-1">Amara Grand Banquet Hall, ECR</p>
+        <p class="text-xs text-ink/50 mt-1">Dress code: Traditional silk saree / sherwani</p>
+      </div>
+
+      <div class="reveal relative">
+        <span class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-ivory border-2 border-gold"></span>
+        <p class="text-[11px] tracking-widest text-emerald font-medium">12 DEC 2026 · 7:00 PM</p>
+        <h3 class="font-display text-lg text-burgundy mt-0.5">Reception</h3>
+        <p class="text-sm text-ink/70 mt-1">Amara Grand Ballroom, ECR</p>
+        <p class="text-xs text-ink/50 mt-1">Dress code: Evening formal / elegant Indian wear</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. OUR STORY & GALLERY ============ -->
+<section id="story" data-snap class="relative min-h-[100dvh] bg-burgundy-deep px-6 py-16">
+  <div class="max-w-md mx-auto">
+
+    <div class="reveal text-center mb-10">
+      <h2 class="font-display text-3xl text-gold-soft">Our Story</h2>
+      <div class="gold-divider w-16 mx-auto my-4"></div>
+    </div>
+
+    <blockquote class="reveal text-center text-ivory/90 font-body italic text-lg leading-relaxed">
+      "It started with a mutual friend's terrible playlist and an even worse rooftop wifi — and somehow, three years later, here we are."
+    </blockquote>
+
+    <blockquote class="reveal reveal-delay-1 text-center text-ivory/90 font-body italic text-lg leading-relaxed mt-10">
+      "He proposed on a rainy Chennai evening, badly, with a golgappa stall as witness. She said yes before he finished the sentence."
+    </blockquote>
+
+    <blockquote class="reveal reveal-delay-2 text-center text-ivory/90 font-body italic text-lg leading-relaxed mt-10">
+      "Now our families are one, our playlists are (mostly) merged, and we can't wait to dance with all of you."
+    </blockquote>
+
+    <!-- Gallery -->
+    <div class="reveal reveal-delay-2 mt-14 grid grid-cols-3 grid-rows-3 gap-2 h-[420px]">
+      <button data-lightbox class="col-span-2 row-span-2 rounded-2xl overflow-hidden shadow-lg shadow-black/30">
+        <img src="https://picsum.photos/seed/aditiraj-1/700/700" alt="Pre-wedding photo 1 — replace with real shoot" class="w-full h-full object-cover photo-tone">
+      </button>
+      <button data-lightbox class="row-span-1 rounded-2xl overflow-hidden shadow-lg shadow-black/30">
+        <img src="https://picsum.photos/seed/aditiraj-2/400/400" alt="Pre-wedding photo 2" class="w-full h-full object-cover photo-tone">
+      </button>
+      <button data-lightbox class="row-span-2 rounded-2xl overflow-hidden shadow-lg shadow-black/30">
+        <img src="https://picsum.photos/seed/aditiraj-3/400/700" alt="Pre-wedding photo 3" class="w-full h-full object-cover photo-tone">
+      </button>
+      <button data-lightbox class="col-span-1 rounded-2xl overflow-hidden shadow-lg shadow-black/30">
+        <img src="https://picsum.photos/seed/aditiraj-4/400/400" alt="Pre-wedding photo 4" class="w-full h-full object-cover photo-tone">
+      </button>
+      <button data-lightbox class="col-span-1 rounded-2xl overflow-hidden shadow-lg shadow-black/30">
+        <img src="https://picsum.photos/seed/aditiraj-5/400/400" alt="Pre-wedding photo 5" class="w-full h-full object-cover photo-tone">
+      </button>
+      <button data-lightbox class="col-span-1 rounded-2xl overflow-hidden shadow-lg shadow-black/30">
+        <img src="https://picsum.photos/seed/aditiraj-6/400/400" alt="Pre-wedding photo 6" class="w-full h-full object-cover photo-tone">
+      </button>
+    </div>
+    <p class="text-center text-ivory/40 text-xs mt-3">Tap any photo to view it larger</p>
+  </div>
+</section>
+
+<!-- Lightbox modal -->
+<div id="lightbox" class="fixed inset-0 z-[60] hidden bg-black/90 items-center justify-center px-4">
+  <button id="lightbox-close" aria-label="Close" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+    <svg class="w-5 h-5 stroke-ivory" viewBox="0 0 24 24" fill="none" stroke-width="2"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <img id="lightbox-img" src="" alt="" class="max-h-[80vh] max-w-full rounded-lg object-contain photo-tone">
+</div>
+
+<!-- ============ 4. HEARTFELT MESSAGES & FAMILY BLESSINGS ============ -->
+<section id="blessings" data-snap class="relative min-h-[100dvh] bg-ivory-deep px-6 py-16">
+  <div class="max-w-md mx-auto">
+
+    <div class="reveal text-center mb-10">
+      <h2 class="font-display text-3xl text-burgundy">From Our Families to Yours</h2>
+      <div class="gold-divider w-16 mx-auto my-4"></div>
+    </div>
+
+    <div class="reveal bg-ivory rounded-2xl border border-gold/30 p-6 shadow-sm">
+      <p class="text-sm text-ink/80 leading-relaxed italic">"Aditi has been our sunshine since the day she was born. Watching her build a life with Rajveer, a young man of such warmth and patience, fills our hearts completely. Come bless our daughter."</p>
+      <p class="font-display text-burgundy text-sm mt-4">— Aditi's Parents</p>
+    </div>
+
+    <div class="reveal reveal-delay-1 bg-ivory rounded-2xl border border-gold/30 p-6 shadow-sm mt-5">
+      <p class="text-sm text-ink/80 leading-relaxed italic">"From the moment Rajveer brought Aditi home for dinner, we knew our family had found its missing piece. We couldn't have chosen better for our son ourselves."</p>
+      <p class="font-display text-burgundy text-sm mt-4">— Rajveer's Parents</p>
+    </div>
+
+    <div class="reveal reveal-delay-2 bg-burgundy rounded-2xl p-6 shadow-sm mt-5">
+      <p class="text-sm text-ivory/90 leading-relaxed italic">"To everyone who shaped our story so far — thank you. Your presence at our wedding means more than any gift ever could."</p>
+      <p class="font-display text-gold-soft text-sm mt-4">— Aditi &amp; Rajveer</p>
+    </div>
+
+    <!-- Guest wish form -->
+    <div class="reveal reveal-delay-2 mt-12">
+      <h3 class="font-display text-xl text-burgundy text-center">Leave Us a Blessing</h3>
+      <form id="wish-form" class="mt-5 flex flex-col gap-3">
+        <input id="wish-name" type="text" required placeholder="Your name"
+          class="w-full rounded-lg border border-gold/40 bg-ivory px-4 py-3 text-sm placeholder:text-ink/40 focus:border-gold outline-none">
+        <textarea id="wish-message" required rows="3" placeholder="Write a warm message for the couple…"
+          class="w-full rounded-lg border border-gold/40 bg-ivory px-4 py-3 text-sm placeholder:text-ink/40 focus:border-gold outline-none resize-none"></textarea>
+        <button type="submit" class="mt-1 bg-burgundy text-ivory text-sm font-medium py-3 rounded-lg active:scale-[.98] transition hover:bg-burgundy-deep">
+          Send Blessing
+        </button>
+      </form>
+
+      <div id="wish-list" class="mt-8 flex flex-col gap-3 max-h-72 overflow-y-auto thin-scroll pr-1"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. VENUE & MAP ============ -->
+<section id="venue" data-snap class="relative min-h-[100dvh] bg-ivory px-6 py-16">
+  <div class="max-w-md mx-auto">
+
+    <div class="reveal text-center mb-8">
+      <h2 class="font-display text-3xl text-burgundy">Venue</h2>
+      <div class="gold-divider w-16 mx-auto my-4"></div>
+      <p class="font-display text-lg text-emerald mt-2">Amara Grand Palace</p>
+      <p class="text-sm text-ink/70 mt-1">Banquet Hall II, East Coast Road,<br>Chennai, Tamil Nadu 600041</p>
+    </div>
+
+    <div class="reveal reveal-delay-1 rounded-2xl overflow-hidden border border-gold/30 shadow-md">
+      <iframe
+        title="Venue location map"
+        src="https://www.google.com/maps?q=Chennai,Tamil+Nadu&output=embed"
+        width="100%" height="260" style="border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+
+    <div class="reveal reveal-delay-2 grid grid-cols-3 gap-2 mt-5 text-center">
+      <a href="https://www.google.com/maps/search/?api=1&query=Amara+Grand+Palace+ECR+Chennai" target="_blank" rel="noopener"
+        class="flex flex-col items-center gap-1.5 bg-burgundy text-ivory rounded-xl py-3.5 text-xs font-medium active:scale-95 transition">
+        <svg class="w-5 h-5 fill-none stroke-gold-soft" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s7-7.2 7-12a7 7 0 10-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        Open Maps
+      </a>
+      <a href="https://www.google.com/maps/dir/?api=1&destination=Amara+Grand+Palace+ECR+Chennai" target="_blank" rel="noopener"
+        class="flex flex-col items-center gap-1.5 bg-emerald text-ivory rounded-xl py-3.5 text-xs font-medium active:scale-95 transition">
+        <svg class="w-5 h-5 fill-none stroke-gold-soft" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5-5 5-5M4 15h11a5 5 0 000-10h-1"/></svg>
+        Directions
+      </a>
+      <a href="tel:+919876543210"
+        class="flex flex-col items-center gap-1.5 bg-gold text-burgundy-deep rounded-xl py-3.5 text-xs font-medium active:scale-95 transition">
+        <svg class="w-5 h-5 fill-none stroke-burgundy-deep" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5c0 9 7 16 16 16l3-4-6-3-2 2c-2-1-4-3-5-5l2-2-3-6z"/></svg>
+        Call Helpdesk
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. RSVP & FOOTER ============ -->
+<section id="rsvp" data-snap class="relative min-h-[100dvh] bg-emerald-deep px-6 py-16 flex flex-col">
+  <div class="max-w-md mx-auto w-full flex-1">
+
+    <div class="reveal text-center mb-8">
+      <h2 class="font-display text-3xl text-gold-soft">RSVP</h2>
+      <div class="gold-divider w-16 mx-auto my-4"></div>
+      <p class="text-ivory/70 text-sm">Kindly respond by 20th November 2026</p>
+    </div>
+
+    <form id="rsvp-form" class="reveal reveal-delay-1 flex flex-col gap-4">
+      <input id="rsvp-name" type="text" required placeholder="Full name"
+        class="w-full rounded-lg border border-gold/30 bg-ivory/5 text-ivory px-4 py-3 text-sm placeholder:text-ivory/40 focus:border-gold outline-none">
+
+      <div>
+        <p class="text-ivory/70 text-xs mb-2">Will you be attending?</p>
+        <div class="grid grid-cols-2 gap-3">
+          <label class="rsvp-radio flex items-center justify-center gap-2 border border-gold/30 rounded-lg py-3 text-sm text-ivory/80 cursor-pointer transition">
+            <input type="radio" name="attending" value="Yes, joyfully attending" class="accent-gold" checked>
+            Joyfully Yes
+          </label>
+          <label class="rsvp-radio flex items-center justify-center gap-2 border border-gold/30 rounded-lg py-3 text-sm text-ivory/80 cursor-pointer transition">
+            <input type="radio" name="attending" value="Sadly cannot attend" class="accent-gold">
+            Can't Make It
+          </label>
+        </div>
+      </div>
+
+      <label class="text-ivory/70 text-xs -mb-2">Number of guests</label>
+      <input id="rsvp-guests" type="number" min="1" max="10" value="1"
+        class="w-full rounded-lg border border-gold/30 bg-ivory/5 text-ivory px-4 py-3 text-sm focus:border-gold outline-none">
+
+      <label class="text-ivory/70 text-xs -mb-2">Dietary preference</label>
+      <select id="rsvp-diet" class="w-full rounded-lg border border-gold/30 bg-ivory/5 text-ivory px-4 py-3 text-sm focus:border-gold outline-none">
+        <option class="text-ink">Vegetarian</option>
+        <option class="text-ink">Non-Vegetarian</option>
+        <option class="text-ink">Jain</option>
+        <option class="text-ink">Vegan</option>
+        <option class="text-ink">Other / Allergies (mention to coordinator)</option>
+      </select>
+
+      <button type="submit" class="mt-2 flex items-center justify-center gap-2 bg-gold text-burgundy-deep font-medium text-sm py-3.5 rounded-lg active:scale-[.98] transition hover:bg-gold-bright">
+        <svg class="w-4 h-4 fill-burgundy-deep" viewBox="0 0 32 32"><path d="M16.02 3C9.4 3 4 8.4 4 15.02c0 2.35.65 4.55 1.78 6.43L4 29l7.72-1.75a12 12 0 004.3.8h.01c6.63 0 12.02-5.4 12.02-12.03C28.05 8.4 22.65 3 16.02 3zm0 21.9a9.9 9.9 0 01-5.05-1.39l-.36-.21-4.58 1.04 1.08-4.46-.24-.38A9.86 9.86 0 016 15.02C6 9.5 10.5 5 16.02 5c5.5 0 9.98 4.5 9.98 10.02 0 5.53-4.48 9.88-9.98 9.88zm5.44-7.4c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.65-2.05-.17-.3-.02-.46.13-.6.14-.14.3-.35.45-.53.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.5-.17-.01-.37-.01-.57-.01s-.52.07-.8.37c-.27.3-1.05 1.02-1.05 2.5s1.07 2.9 1.22 3.1c.15.2 2.1 3.2 5.08 4.5.71.3 1.26.48 1.7.62.71.22 1.35.19 1.86.12.57-.09 1.76-.72 2-1.42.24-.7.24-1.3.17-1.42-.07-.13-.27-.2-.57-.35z"/></svg>
+        Send RSVP via WhatsApp
+      </button>
+    </form>
+
+    <p id="rsvp-confirm" class="reveal hidden text-center text-gold-soft text-sm mt-5"></p>
+  </div>
+
+  <!-- Footer -->
+  <footer class="reveal max-w-md mx-auto w-full text-center mt-16 pt-8 border-t border-gold/20">
+    <p class="font-display text-gold-soft text-xl tracking-wide">#AditiFoundHerRaj</p>
+    <p class="text-ivory/40 text-xs mt-4">With love, from Chennai — see you at the mandap.</p>
+    <p class="text-ivory/30 text-[11px] mt-1">© 2026 Aditi &amp; Rajveer. Made with love for our families.</p>
+  </footer>
+</section>
+
+<script>
+(function () {
+  /* ---------- Reveal on scroll ---------- */
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach((el) => io.observe(el));
+  } else {
+    revealEls.forEach((el) => el.classList.add('in-view'));
+  }
+
+  /* ---------- Dot navigation ---------- */
+  const sections = document.querySelectorAll('section[data-snap]');
+  const dots = document.querySelectorAll('.dot-nav button');
+  dots.forEach((dot) => {
+    dot.addEventListener('click', () => {
+      const target = document.querySelector(dot.dataset.target);
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+  if ('IntersectionObserver' in window) {
+    const navIO = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = '#' + entry.target.id;
+          dots.forEach((d) => d.classList.toggle('active', d.dataset.target === id));
+        }
+      });
+    }, { threshold: 0.5 });
+    sections.forEach((s) => navIO.observe(s));
+  }
+
+  /* ---------- Music toggle ---------- */
+  const audio = document.getElementById('bg-music');
+  const musicBtn = document.getElementById('music-toggle');
+  const iconPlay = document.getElementById('icon-play');
+  const iconPause = document.getElementById('icon-pause');
+  let isPlaying = false;
+  musicBtn.addEventListener('click', () => {
+    if (!isPlaying) {
+      audio.play().catch(() => { /* No audio source configured yet — add one in the <audio> tag above */ });
+      isPlaying = true;
+      musicBtn.setAttribute('aria-label', 'Pause background music');
+    } else {
+      audio.pause();
+      isPlaying = false;
+      musicBtn.setAttribute('aria-label', 'Play background music');
+    }
+    iconPlay.classList.toggle('hidden', isPlaying);
+    iconPause.classList.toggle('hidden', !isPlaying);
+  });
+
+  /* ---------- Countdown timer ---------- */
+  const weddingDate = new Date('2026-12-12T10:30:00+05:30').getTime();
+  const cdDays = document.getElementById('cd-days');
+  const cdHours = document.getElementById('cd-hours');
+  const cdMins = document.getElementById('cd-mins');
+  const cdSecs = document.getElementById('cd-secs');
+  const cdMessage = document.getElementById('cd-message');
+  const pad = (n) => String(n).padStart(2, '0');
+
+  function tickCountdown() {
+    const diff = weddingDate - Date.now();
+    if (diff <= 0) {
+      cdDays.textContent = cdHours.textContent = cdMins.textContent = cdSecs.textContent = '00';
+      cdMessage.classList.remove('hidden');
+      clearInterval(countdownInterval);
+      return;
+    }
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+    cdDays.textContent = pad(days);
+    cdHours.textContent = pad(hours);
+    cdMins.textContent = pad(mins);
+    cdSecs.textContent = pad(secs);
+  }
+  tickCountdown();
+  const countdownInterval = setInterval(tickCountdown, 1000);
+
+  /* ---------- Add to Google Calendar ---------- */
+  function toGCalDate(date) {
+    return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  }
+  document.getElementById('add-to-calendar').addEventListener('click', () => {
+    const start = new Date('2026-12-12T10:30:00+05:30');
+    const end = new Date('2026-12-12T13:30:00+05:30');
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: "Aditi & Rajveer's Wedding — Muhurtham & Varmala",
+      dates: `${toGCalDate(start)}/${toGCalDate(end)}`,
+      details: 'Join us for the wedding ceremony of Aditi & Rajveer. #AditiFoundHerRaj',
+      location: 'Amara Grand Palace, Banquet Hall II, ECR, Chennai, Tamil Nadu 600041',
+      sf: 'true',
+      output: 'xml',
+    });
+    window.open(`https://calendar.google.com/calendar/render?${params.toString()}`, '_blank', 'noopener');
+  });
+
+  /* ---------- Lightbox ---------- */
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  document.querySelectorAll('[data-lightbox]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const img = btn.querySelector('img');
+      lightboxImg.src = img.src.replace(/\/\d+\/\d+$/, '/1200/1200');
+      lightboxImg.alt = img.alt;
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+  function closeLightbox() {
+    lightbox.classList.add('hidden');
+    lightbox.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+  /* ---------- Guest wishes (localStorage) ---------- */
+  const WISH_KEY = 'weddingWishes';
+  const wishForm = document.getElementById('wish-form');
+  const wishList = document.getElementById('wish-list');
+  const seedWishes = [
+    { name: 'Priya & Karthik', message: 'So thrilled for you both! Wishing you a lifetime of love and laughter.' },
+    { name: 'Uncle Suresh', message: 'Aditi beta, all our blessings to you and Rajveer. Can\'t wait to celebrate!' },
+  ];
+
+  function loadWishes() {
+    try {
+      const raw = localStorage.getItem(WISH_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore corrupted storage */ }
+    localStorage.setItem(WISH_KEY, JSON.stringify(seedWishes));
+    return seedWishes;
+  }
+
+  function renderWishes() {
+    const wishes = loadWishes();
+    wishList.innerHTML = '';
+    wishes.slice().reverse().forEach((w) => {
+      const card = document.createElement('div');
+      card.className = 'bg-ivory rounded-xl border border-gold/25 p-4';
+      const safeName = document.createElement('p');
+      safeName.className = 'font-display text-burgundy text-sm';
+      safeName.textContent = w.name;
+      const safeMsg = document.createElement('p');
+      safeMsg.className = 'text-ink/70 text-sm mt-1';
+      safeMsg.textContent = w.message;
+      card.appendChild(safeName);
+      card.appendChild(safeMsg);
+      wishList.appendChild(card);
+    });
+  }
+  renderWishes();
+
+  wishForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nameInput = document.getElementById('wish-name');
+    const msgInput = document.getElementById('wish-message');
+    const name = nameInput.value.trim();
+    const message = msgInput.value.trim();
+    if (!name || !message) return;
+    const wishes = loadWishes();
+    wishes.push({ name, message });
+    localStorage.setItem(WISH_KEY, JSON.stringify(wishes));
+    renderWishes();
+    nameInput.value = '';
+    msgInput.value = '';
+  });
+
+  /* ---------- RSVP radio active styling ---------- */
+  document.querySelectorAll('.rsvp-radio input').forEach((radio) => {
+    radio.addEventListener('change', () => {
+      document.querySelectorAll('.rsvp-radio').forEach((label) => {
+        label.classList.toggle('border-gold', label.querySelector('input').checked);
+        label.classList.toggle('bg-gold/10', label.querySelector('input').checked);
+      });
+    });
+  });
+
+  /* ---------- RSVP via WhatsApp ---------- */
+  const COORDINATOR_PHONE = '919876543210'; // country code + number, no plus/spaces
+  document.getElementById('rsvp-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('rsvp-name').value.trim();
+    const attending = document.querySelector('input[name="attending"]:checked').value;
+    const guests = document.getElementById('rsvp-guests').value;
+    const diet = document.getElementById('rsvp-diet').value;
+    if (!name) return;
+
+    const text = `Hello! RSVP for Aditi & Rajveer's Wedding 💛%0A%0AName: ${name}%0AAttending: ${attending}%0AGuests: ${guests}%0ADietary preference: ${diet}`;
+    const waLink = `https://wa.me/${COORDINATOR_PHONE}?text=${text}`;
+    window.open(waLink, '_blank', 'noopener');
+
+    const confirm = document.getElementById('rsvp-confirm');
+    confirm.textContent = `Thank you, ${name}! We can't wait to celebrate with you. 🎉`;
+    confirm.classList.remove('hidden');
+    confirm.classList.add('in-view');
+  });
+})();
+</script>
+
+</body>
+</html>
